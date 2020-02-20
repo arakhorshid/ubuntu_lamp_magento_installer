@@ -30,6 +30,7 @@ or
 $ sudo bash install.sh -prod
 ~~~
 
+
 If you are running into problems because of already existing installations run the uninstall skript and reboot the system.
 
 ~~~

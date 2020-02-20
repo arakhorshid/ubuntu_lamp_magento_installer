@@ -24,8 +24,6 @@ download_magento(){
 
     rm ~/.composer/auth.json
 
-	chown -R www-data:www-data /var/www/
-	
 }
 
 
@@ -37,32 +35,15 @@ install_magento(){
 	mysql -u root -e "GRANT all privileges on ${MYSQL_MAGENTO_DATABASE}.* to '${MYSQL_MAGENTO_USER}'@'localhost'; Flush privileges;"
 
 	
-	su www-data
-
 	if [ $MAGENTO_USE_SECURE -eq 1 ]; then
 		/var/www/magento2/bin/magento setup:install --base-url-secure="https://${MAGENTO_URL}" --backend-frontname=$MAGENTO_BACKEND_FRONTNAME --language=$MAGENTO_LANGUAGE --timezone=$MAGENTO_TIMEZONE --currency=$MAGENTO_DEFAULT_CURRENCY --db-host=$MYSQL_HOST --db-name=$MYSQL_MAGENTO_DATABASE --db-user=$MYSQL_MAGENTO_USER --db-password=$MYSQL_MAGENTO_PASSWORD --use-secure=$MAGENTO_USE_SECURE --use-secure-admin=$MAGENTO_USE_SECURE_ADMIN --admin-firstname=$MAGENTO_ADMIN_FIRSTNAME --admin-lastname=$MAGENTO_ADMIN_LASTNAME --admin-email=$MAGENTO_ADMIN_EMAIL --admin-user=$MAGENTO_ADMIN_USERNAME --admin-password=$MAGENTO_ADMIN_PASSWORD
 	else
 		/var/www/magento2/bin/magento setup:install --base-url="http://${MAGENTO_URL}" --backend-frontname=$MAGENTO_BACKEND_FRONTNAME --language=$MAGENTO_LANGUAGE --timezone=$MAGENTO_TIMEZONE --currency=$MAGENTO_DEFAULT_CURRENCY --db-host=$MYSQL_HOST --db-name=$MYSQL_MAGENTO_DATABASE --db-user=$MYSQL_MAGENTO_USER --db-password=$MYSQL_MAGENTO_PASSWORD --use-secure=$MAGENTO_USE_SECURE --base-url-secure=$MAGENTO_BASE_URL_SECURE --use-secure-admin=$MAGENTO_USE_SECURE_ADMIN --admin-firstname=$MAGENTO_ADMIN_FIRSTNAME --admin-lastname=$MAGENTO_ADMIN_LASTNAME --admin-email=$MAGENTO_ADMIN_EMAIL --admin-user=$MAGENTO_ADMIN_USERNAME --admin-password=$MAGENTO_ADMIN_PASSWORD
 	fi
 
+	chown -R www-data:www-data /var/www/
+
 }
-
-
-set_mode(){
-
-    su www-data
-
-    if [ $2 == "-dev" ]; then
-        /var/www/magento2/bin/magento deploy:mode:set developer
-        chmod 777 -R /var/www/magento2
-    fi
-
-    if [ $2 == "-prod" ]; then 
-        /var/www/magento2/bin/magento deploy:mode:set productio
-        find /var/www/magento2/app/code /var/www/magento2/var/view_preprocessed /var/www/magento2/vendor /var/www/magento2/pub/static /var/www/magento2/app/etc /var/www/magento2/generated/code /var/www/magento2/generated/metadata \( -type f -or -type d \) -exec chmod u-w {} + && chmod o-rwx /var/www/magento2/app/etc/env.php && chmod u+x /var/www/magento2/bin/magento
-    fi
-}
-
 
 
 install_apache_virtual_host(){
@@ -158,6 +139,21 @@ install_ssl(){
 }
 
 
+
+set_mode(){
+
+	chown www-data:www-data -R /var/www/magento2
+
+    if [ $1 == "-dev" ]; then
+        /var/www/magento2/bin/magento deploy:mode:set developer
+        chmod 777 -R /var/www/magento2
+    fi
+
+    if [ $1 == "-prod" ]; then 
+        /var/www/magento2/bin/magento deploy:mode:set productio
+        find /var/www/magento2/app/code /var/www/magento2/var/view_preprocessed /var/www/magento2/vendor /var/www/magento2/pub/static /var/www/magento2/app/etc /var/www/magento2/generated/code /var/www/magento2/generated/metadata \( -type f -or -type d \) -exec chmod u-w {} + && chmod o-rwx /var/www/magento2/app/etc/env.php && chmod u+x /var/www/magento2/bin/magento
+    fi
+}
 
 
 download_magento

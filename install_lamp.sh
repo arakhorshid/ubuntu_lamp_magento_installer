@@ -23,7 +23,7 @@ install_software(){
 
 	apt install -y composer
 
-	apt install -y mysql-server
+	apt install -y mysql-server mysql-common mysql-client
 
 	rm /etc/php/7.2/cli/php.ini
 	cp /etc/php/7.2/apache2/php.ini /etc/php/7.2/cli/
