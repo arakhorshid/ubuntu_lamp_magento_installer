@@ -25,6 +25,9 @@ install_software(){
 
 	apt install -y mysql-server
 
+	rm /etc/php/7.2/cli/php.ini
+	cp /etc/php/7.2/apache2/php.ini /etc/php/7.2/cli/
+
 	systemctl enable apache2
 	systemctl enable mysql
 }
@@ -68,10 +71,6 @@ configure_mysql(){
 	echo "------------------------------------------------------------------"
 	echo "                      Mysql Configuration        "
 	echo "------------------------------------------------------------------"
-
-	mysql -u root -e "CREATE USER '${MYSQL_MAGENTO_USER}'@'localhost' identified by '${MYSQL_MAGENTO_PASSWORD}';"
-	mysql -u root -e "CREATE DATABASE ${MYSQL_MAGENTO_DATABASE} CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
-	mysql -u root -e "GRANT all privileges on ${MYSQL_MAGENTO_DATABASE}.* to '${MYSQL_MAGENTO_USER}'@'localhost'; Flush privileges;"
 
 	mysql --user=root <<_EOF_
 		UPDATE mysql.user set authentication_string=password('${MYSQL_ROOT_PASSWORD}') WHERE user='root'

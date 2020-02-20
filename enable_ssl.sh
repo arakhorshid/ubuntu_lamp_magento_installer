@@ -37,21 +37,21 @@ install_ssl(){
 
     cp magento_ssl.conf /etc/apache2/sites-available/
 
-        sed -i "s/#RewriteEngine On/RewriteEngine On/g" "/etc/apache2/sites-available/magento.conf"
+        sed -i "s/#RewriteEngine.*/RewriteEngine On/g" "/etc/apache2/sites-available/magento.conf"
         sed -i "s/#RewriteRule/RewriteRule/g" "/etc/apache2/sites-available/magento.conf"
 
-    if [ ! -z "$MAGENTO_DOMAIN" ];
+    if [ ! -z "$MAGENTO_URL" ];
 	then
-	    sed -i "s|example.com|$MAGENTO_DOMAIN|g"  "/etc/apache2/sites-available/magento_ssl.conf"
-        sed -i "s|example.com|$MAGENTO_DOMAIN|g"  "/etc/apache2/sites-available/magento.conf"
+	    sed -i "s|example.com|$MAGENTO_URL|g"  "/etc/apache2/sites-available/magento_ssl.conf"
+        sed -i "s|example.com|$MAGENTO_URL|g"  "/etc/apache2/sites-available/magento.conf"
     else
         echo "Servername not filled in env"
 	fi
 
-	if [ ! -z "$SERVER_ADMIN_EMAIL" ]; 
+	if [ ! -z "$MAGENTO_ADMIN_EMAIL" ]; 
 	then
-    	sed -i "s|example@example.com|$SERVER_ADMIN_EMAIL|g"  "/etc/apache2/sites-available/magento_ssl.conf"
-      	sed -i "s|example@example.com|$SERVER_ADMIN_EMAIL|g"  "/etc/apache2/sites-available/magento.conf"
+    	sed -i "s|ServerAdmin.*|ServerAdmin $MAGENTO_ADMIN_EMAIL|g"  "/etc/apache2/sites-available/magento_ssl.conf"
+      	sed -i "s|ServerAdmin.*|ServerAdmin $MAGENTO_ADMIN_EMAIL|g"  "/etc/apache2/sites-available/magento.conf"
 	fi
 
 

@@ -8,6 +8,9 @@ apt purge php7.2* -y
 apt autoclean -y
 apt autoremove -y
 
+ufw reset
+ufw disable
+
 rm -r /var/www/magento2/
 rm -r /etc/apache2/
 rm -r /etc/php/
