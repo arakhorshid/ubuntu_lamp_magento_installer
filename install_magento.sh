@@ -18,11 +18,16 @@ download_magento(){
 
     mkdir /var/www/magento2/
 
-    cp auth.json ~/.composer
-
+	if [ -d "$HOME/.composer" ];
+	then
+    	cp auth.json $HOME/.composer/
+	else
+		mkdir $HOME/.composer/
+		cp auth.json $HOME/.composer/
+	fi		
     composer create-project --repository=https://repo.magento.com/ magento/project-community-edition "/var/www/magento2"
 
-    rm ~/.composer/auth.json
+    rm $HOME/.composer/auth.json
 
 }
 
